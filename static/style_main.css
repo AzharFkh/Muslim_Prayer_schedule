@@ -1,0 +1,31 @@
+.main-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 85vh;
+  padding: 2rem 4rem;
+  /* background: linear-gradient(135deg, #e8f0f8, #fefefe); */
+  font-family: "Poppins", "Inter", sans-serif;
+}
+
+.main-page-container h4 {
+    text-align: center;
+  font-size: 1.1rem;
+  font-weight: 450;
+  color: #3a4759;
+}
+
+/* Hover micro-interaction */
+.main-page-container h2:hover,
+.main-page-container h4:hover {
+  transform: translateY(-3px);
+  transition: 0.3s ease;
+  box-shadow: 0px 10px 22px rgba(0, 0, 0, 0.12);
+}
+
+/* Smooth entrance */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}

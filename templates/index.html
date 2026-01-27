@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Dashboard Pemantauan{% endblock %}
+
+{% block head_scripts %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style_main.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="main-page-container">
+    <h4>Website ini dikembangkan sebagai pembelajaran pada mata kuliah fisika komputasi astronomi sebagai 
+        alat untuk melakukan konversi sistem penanggalan dan jadwal waktu solat berbasis perhitungan astronomis</h2>
+</div>
+
+<div class="main-page-container">
+    <h4>
+        Saya menyampaikan ucapan terima kasih kepada:
+        <br>
+        <strong style="font-size: 1.15rem; display:inline-block; margin: 6px 0;">
+          Prof. Dr. rer. nat. Abdurrouf, S.Si., M.Si.
+        </strong>
+        <br>
+        selaku dosen pengampu mata kuliah yang telah memberikan arahan akademik,
+        perspektif ilmiah, serta ruang pengembangan kompetensi sehingga proyek ini
+        dapat diselesaikan.
+    </h4>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Jadwal Sholat{% endblock %}
+
+{% block head_scripts %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="praytime-container">
+  <div class="praytime-card">
+    <h3 class="praytime-title">Isi Data Lokasi & Tanggal</h3>
+
+    <form method="POST" class="praytime-form">
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label for="city-input" class="form-label">Cari Kota</label>
+          <div class="city-search-wrapper">
+            <input type="text" id="city-input" class="form-input" placeholder="Masukkan nama kota...">
+            <button type="button" class="btn-search" onclick="searchCity()">Cari</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="latitude" class="form-label">Latitude</label>
+          <input type="number" step="any" id="latitude" name="latitude" class="form-input"
+                 value="{{ latitude if latitude else '-7.9839' }}" required>
+        </div>
+        <div class="form-group">
+          <label for="longitude" class="form-label">Longitude</label>
+          <input type="number" step="any" id="longitude" name="longitude" class="form-input"
+                 value="{{ longitude if longitude else '112.6214' }}" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="timezone" class="form-label">Timezone (GMT)</label>
+          <input type="number" step="any" id="timezone" name="timezone" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="altitude" class="form-label">Ketinggian (m)</label>
+          <input type="number" id="altitude" name="altitude" class="form-input"
+                 value="{{ altitude if altitude else '500' }}" required>
+        </div>
+      </div>
+
+      <div class="form-row ashar-method">
+        <label class="form-label">Perhitungan Ashar</label>
+        <div class="radio-group">
+          <label class="radio-item">
+            <input type="radio" id="ashar1" name="asharMethod" value="1"
+                   {% if not KA or KA == 1 %}checked{% endif %}>
+            <span>Syafi'i</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" id="ashar2" name="asharMethod" value="2"
+                   {% if KA == 2 %}checked{% endif %}>
+            <span>Hanafi</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label for="tanggal" class="form-label">Tanggal Awal</label>
+          <input type="date" id="tanggal" name="tanggal" class="form-input"
+                 value="{{ tanggal if tanggal else '' }}" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" name="mode" value="daily">Cari Jadwal Harian</button>
+      <button type="submit" class="btn-submit" name="mode" value="weekly">Cari Jadwal Mingguan</button>
+    </form>
+  </div>
+
+  {# === DAILY RESULT === #}
+  {% if hasil %}
+  <div class="praytime-result">
+    <h4 class="result-title">Jadwal Sholat (Harian)</h4>
+    <h4 class="result-tanggal">{{ tanggal.strftime('%d %B %Y') }}</h4>
+    <p class="result-location"><strong>Lokasi:</strong> Lat {{ latitude }}, Lon {{ longitude }}</p>
+
+    <div class="result-grid">
+      {% for nama, jam in hasil.items() %}
+      <div class="result-item">
+        <div class="result-card">
+          <h5 class="result-name">{{ nama }}</h5>
+          <p class="result-time">{{ jam }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# === WEEKLY RESULT === #}
+  {% if hasil_mingguan %}
+  <div class="praytime-result weekly-result">
+    <h4 class="result-title">Jadwal Sholat Mingguan</h4>
+    <p class="result-location"><strong>Lokasi:</strong> Lat {{ latitude }}, Lon {{ longitude }}</p>
+
+    {% for hari in hasil_mingguan %}
+    <div class="weekly-day-block">
+      <h4 class="result-tanggal">{{ hari.tanggal.strftime('%d %B %Y') }}</h4>
+      <div class="result-grid">
+        {% for nama, jam in hari.jadwal.items() %}
+        <div class="result-item">
+          <div class="result-card">
+            <h5 class="result-name">{{ nama }}</h5>
+            <p class="result-time">{{ jam }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Dashboard Pemantauan{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h4 class="mb-3">Jadwal Sholat untuk {{ tanggal.strftime('%d %B %Y') }}</h4>
+  <p><strong>Lokasi:</strong> Lat {{ latitude }}, Lon {{ longitude }}</p>
+
+  <div class="row">
+    {% for nama, jam in hasil.items() %}
+      <div class="col-md-4 mb-3">
+        <div class="card text-center shadow">
+          <div class="card-body">
+            <h5 class="card-title">{{ nama }}</h5>
+            <p class="card-text fs-4">{{ jam }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

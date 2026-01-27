@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Aplikasi{% endblock %}</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  {% block head_scripts %}{% endblock %}
+</head>
+<body>
+
+  <nav class="main-navbar">
+    <div class="nav-center">
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('konversi_tanggal') }}">Konversi Tanggal</a>
+      <a href="{{ url_for('jadwal_solat_page') }}">Jadwal Sholat</a>
+      <a href="https://kemenag.go.id/">Informasi</a>
+    </div>
+  </nav>
+
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  {% block scripts %}
+    <script src="{{ url_for('static', filename='js/jadwal-solat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/konversi-tanggal.js') }}"></script>
+  {% endblock %}
+  
+</body>
+</html>

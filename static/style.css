@@ -1,0 +1,441 @@
+/* bagian navbar ini ya */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.main-navbar {
+  position: sticky;
+  top: 0;
+  width: auto;
+  background-color: #f7f9fc; 
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  padding: 1rem 2rem;
+  transition: all 0.3s ease;
+}
+
+.main-navbar .nav-center {
+  display: flex;
+  gap: 2.5rem; 
+}
+
+.main-navbar a {
+  text-decoration: none;
+  color: #333;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.25s ease;
+}
+
+.main-navbar a:hover {
+  color: #6ec1e4;
+}
+
+.main-navbar a::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #6ec1e4;
+  transition: width 0.25s ease;
+}
+
+.main-navbar a:hover::after {
+  width: 100%;
+}
+
+/* Bagian konversi tanggal */
+
+.converter-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 92vh;
+  background: #f0f4f8;
+}
+
+.converter-card {
+  display: flex;
+  width: 800px;
+  max-width: 95%;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.converter-form {
+  flex: 1;
+  padding: 2rem 2.5rem;
+  background: #ffffff;
+}
+
+.converter-title {
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 0.3rem;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.input-group .form-input::placeholder {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus, .form-select:focus {
+    text-align: center;
+    border-color: #6ec1e4;
+    box-shadow: 0 0 0 3px rgba(110, 193, 228, 0.25);
+}
+
+.btn-convert {
+  display: inline-block;
+  background-color: #6ec1e4;
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.8rem;
+  transition: background 0.25s;
+}
+
+.btn-convert:hover {
+  background-color: #4baed4;
+}
+
+.converter-result {
+  flex: 1;
+  background-color: #6ec1e4;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+}
+
+.converter-result h4 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.converter-result p {
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.input-wrapper {
+  position: relative;
+  white-space: nowrap;
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.error-msg {
+  color: #c0392b;
+  font-size: 0.8rem;
+  position: absolute;
+  bottom: -1.2rem;
+  left: 0;
+  white-space: nowrap;
+}
+
+
+.form-input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Bagian jadwal solat */
+
+.city-search-wrapper {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.btn-search {
+  background: #4a90e2;
+  border: none;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-search:hover {
+  background: #357ab8;
+  transform: translateY(-2px);
+}
+
+.praytime-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 85vh;
+  background: #f0f4f8;
+  padding: 2rem;
+  font-family: "Poppins", "Inter", sans-serif;
+}
+
+.praytime-card {
+  width: 800px;
+  max-width: 95%;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 2rem 2.5rem;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.praytime-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.praytime-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #333;
+  margin-top: 0.1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.praytime-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 0.3rem;
+}
+
+.form-input {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+  border-color: #6ec1e4;
+  box-shadow: 0 0 0 3px rgba(110, 193, 228, 0.25);
+}
+
+.radio-group {
+  display: flex;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.radio-item input[type="radio"] {
+  accent-color: #6ec1e4;
+  transform: scale(1.2);
+}
+
+.btn-submit {
+  display: inline-block;
+  background-color: #6ec1e4;
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background 0.25s;
+}
+
+.btn-submit:hover {
+  background-color: #4baed4;
+}
+
+.praytime-result {
+  width: 800px;
+  max-width: 95%;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 2rem 2.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.result-title {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+    margin-top: 0.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.result-tanggal {
+    font-size: 1.2rem;
+    margin: 1rem;
+}
+
+.result-location {
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.result-card {
+  background-color: #6ec1e4;
+  color: white;
+  border-radius: 8px;       
+  padding: 0.35rem 0.4rem;  
+  font-size: 0.85rem;       
+  box-shadow: 0 3px 6px rgba(110, 193, 228, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.result-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(110, 193, 228, 0.4);
+}
+
+.result-name {
+  font-size: 1rem;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+  font-weight: 500;
+}
+
+.result-time {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0.25rem;
+}
+
+/* Untuk Perangkat mobile */
+
+@media (max-width: 768px) {
+    .main-navbar .nav-center {
+    gap: 1rem;
+  }
+
+  .praytime-container{
+      min-height: 88vh;
+
+  }
+    .main-navbar a {
+    font-size: 0.9rem;
+  }
+    .main-navbar {
+    padding: 0.6rem 1rem;
+  }
+    .converter-card {
+    flex-direction: column;
+    height: auto;
+  }
+    .converter-container {
+        padding: 0.5rem;
+    }
+
+    .converter-result {
+    padding: 1.5rem;
+  }
+    .praytime-card, .praytime-result {
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .btn-submit {
+    width: 100%;
+  }
+
+  .result-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .result-time {
+    max-height: 200px;
+  }
+}
+
