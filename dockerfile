@@ -18,4 +18,4 @@ EXPOSE 5100
 
 # 7. Perintah untuk menjalankan aplikasi
 # Opsi A (Development/Simple):
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5100", "app:app"]
