@@ -3,12 +3,12 @@ services:
     # Build image dari folder saat ini
     build: . 
     # Nama container nanti
-    container_name: flask_app_container
+    container_name: jadwal_solat_container
     # Jika container crash, otomatis restart
     restart: always
     # Mapping Port: [Port Server Luar]:[Port Container Dalam]
     ports:
-      - "8080:5000"
+      - "8100:5100"
     # (Opsional) Agar perubahan kode di server langsung ngefek tanpa build ulang
     # volumes:
     #   - .:/app

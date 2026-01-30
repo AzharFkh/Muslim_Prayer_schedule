@@ -14,8 +14,8 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # 6. Buka port 5000 (Port default Flask)
-EXPOSE 5000
+EXPOSE 5100
 
 # 7. Perintah untuk menjalankan aplikasi
 # Opsi A (Development/Simple):
-CMD ["python3", "app.py"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
