@@ -1,31 +1,250 @@
-.main-page-container {
+body {
+  background-color: #f0f4f8;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  color: #333;
+}
+
+.dashboard-wrapper {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dashboard-hero,
+.prayer-dashboard,
+.astro-dashboard,
+.about-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+}
+
+.hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.hero-badge {
+  display: inline-block;
+  background-color: #e6f5fb;
+  color: #2b8cb5;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  margin-bottom: 0.5rem;
+}
+
+.hero-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #22303c;
+}
+
+.hero-subtitle {
+  margin: 0.35rem 0 0;
+  color: #5a6a7b;
+  font-size: 0.95rem;
+}
+
+.live-clock-box {
+  background: #f7f9fc;
+  border: 1px solid #e1e8f0;
+  border-radius: 12px;
+  padding: 0.75rem 1.2rem;
+  text-align: right;
+  min-width: 130px;
+}
+
+.clock-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7c8d;
+  margin-bottom: 0.15rem;
+}
+
+.clock-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #22303c;
+  font-variant-numeric: tabular-nums;
+}
+
+.date-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.astro-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+}
+
+.info-card {
+  background: #f7f9fc;
+  border: 1px solid #e4ebf2;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+}
+
+.info-card.accent-card {
+  background: #6ec1e4;
+  border-color: #6ec1e4;
+  color: #ffffff;
+}
+
+.card-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #5a6a7b;
+  margin-bottom: 0.35rem;
+}
+
+.info-card.accent-card .card-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card-value {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  min-height: 85vh;
-  padding: 2rem 4rem;
-  /* background: linear-gradient(135deg, #e8f0f8, #fefefe); */
-  font-family: "Poppins", "Inter", sans-serif;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
 }
 
-.main-page-container h4 {
-    text-align: center;
-  font-size: 1.1rem;
-  font-weight: 450;
+.section-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #22303c;
+}
+
+.location-meta {
+  margin: 0.25rem 0 0;
+  font-size: 0.88rem;
+  color: #5a6a7b;
+}
+
+.next-prayer-pill {
+  background: #e6f5fb;
+  color: #1f6f91;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pill-countdown {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.prayer-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 0.9rem;
+}
+
+.prayer-card {
+  background: #f7f9fc;
+  border: 1px solid #e4ebf2;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prayer-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+.prayer-card.is-next {
+  background: #6ec1e4;
+  border-color: #6ec1e4;
+  color: #ffffff;
+}
+
+.prayer-name {
+  display: block;
+  font-size: 0.88rem;
+  color: #5a6a7b;
+  margin-bottom: 0.35rem;
+}
+
+.prayer-card.is-next .prayer-name {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.prayer-time {
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.quick-actions {
+  margin-top: 1.4rem;
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.btn-action {
+  text-decoration: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn-action.primary {
+  background-color: #6ec1e4;
+  color: #ffffff;
+}
+
+.btn-action.primary:hover {
+  background-color: #4baed4;
+}
+
+.btn-action.secondary {
+  background-color: #eef3f8;
+  color: #2d3e50;
+}
+
+.btn-action.secondary:hover {
+  background-color: #dde7f0;
+}
+
+.about-card {
+  text-align: center;
+  color: #4a5968;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.about-card p {
+  margin: 0.4rem 0;
+}
+
+.thanks-text {
+  margin-top: 0.75rem !important;
   color: #3a4759;
-}
-
-/* Hover micro-interaction */
-.main-page-container h2:hover,
-.main-page-container h4:hover {
-  transform: translateY(-3px);
-  transition: 0.3s ease;
-  box-shadow: 0px 10px 22px rgba(0, 0, 0, 0.12);
-}
-
-/* Smooth entrance */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
 }
