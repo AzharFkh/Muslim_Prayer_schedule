@@ -14,7 +14,17 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    now = datetime.datetime.now()
+    # Lokasi default: Kota Malang (WIB / GMT+7)
+    default_lokasi = {
+        "nama": "Kota Malang",
+        "latitude": -7.9666,
+        "longitude": 112.6326,
+        "timezone": 7,
+        "altitude": 450,
+    }
+
+    wib = datetime.timezone(datetime.timedelta(hours=default_lokasi["timezone"]))
+    now = datetime.datetime.now(wib)
     today = now.date()
 
     hari_indonesia = [
@@ -29,15 +39,6 @@ def index():
 
     tanggal_masehi = f"{nama_hari}, {today.day} {bulan_greg_reverse.get(today.month, today.month)} {today.year}"
     tanggal_hijriah = f"{h_day} {bulan_hijriah_reverse.get(h_month, h_month)} {h_year} H"
-
-    # Lokasi default: Kota Malang (WIB / GMT+7)
-    default_lokasi = {
-        "nama": "Kota Malang",
-        "latitude": -7.9666,
-        "longitude": 112.6326,
-        "timezone": 7,
-        "altitude": 450,
-    }
 
     jadwal_hari_ini = jadwal_solat(
         jd_today,
