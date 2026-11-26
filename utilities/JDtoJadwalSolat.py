@@ -12,20 +12,23 @@ def sudut_deklinasi(JD):
              + 0.17132 * math.sin(math.radians(3 * 57.297 * T - 59.722)))
     return delta
 
-def waktu_transit(JD, longitude, timezone):
-    """Hitung waktu transit (jam lokal)"""
+def equation_of_time(JD):
+    """Hitung Equation of Time (menit)"""
     U = (JD - 2451545) / 36525
     L0 = 280.46607 + 36000.7698 * U
     L0_rad = math.radians(L0)
 
-    ET = (-(1789 + 237 * U) * math.sin(L0_rad)
-          - (7146 - 62 * U) * math.cos(L0_rad)
-          + (9934 - 14 * U) * math.sin(2 * L0_rad)
-          - (29 + 5 * U) * math.cos(2 * L0_rad)
-          + (74 + 10 * U) * math.sin(3 * L0_rad)
-          + (320 - 4 * U) * math.cos(3 * L0_rad)
-          - 212 * math.sin(4 * L0_rad)) / 1000.0
+    return (-(1789 + 237 * U) * math.sin(L0_rad)
+            - (7146 - 62 * U) * math.cos(L0_rad)
+            + (9934 - 14 * U) * math.sin(2 * L0_rad)
+            - (29 + 5 * U) * math.cos(2 * L0_rad)
+            + (74 + 10 * U) * math.sin(3 * L0_rad)
+            + (320 - 4 * U) * math.cos(3 * L0_rad)
+            - 212 * math.sin(4 * L0_rad)) / 1000.0
 
+def waktu_transit(JD, longitude, timezone):
+    """Hitung waktu transit (jam lokal)"""
+    ET = equation_of_time(JD)
     return 12 + timezone - (longitude / 15) - (ET / 60)
 
 def HA(h, L, delta):

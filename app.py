@@ -1,5 +1,11 @@
 from flask import Flask, render_template, request
-from utilities.JDtoJadwalSolat import jadwal_solat
+from utilities.JDtoJadwalSolat import (
+    jadwal_solat,
+    sudut_deklinasi,
+    waktu_transit,
+    equation_of_time,
+    to_hhmm,
+)
 from utilities.paging_tools import *
 from datetime import timedelta
 import datetime
@@ -57,6 +63,19 @@ def index():
             "besok": True,
         }
 
+    astro_data = {
+        "deklinasi": sudut_deklinasi(jd_today),
+        "equation_of_time": equation_of_time(jd_today),
+        "waktu_transit": to_hhmm(
+            waktu_transit(
+                jd_today,
+                default_lokasi["longitude"],
+                default_lokasi["timezone"],
+            )
+        ),
+        "h_maghrib": -0.8333 - 0.0347 * (default_lokasi["altitude"] ** 0.5),
+    }
+
     return render_template(
         "index.html",
         tanggal_masehi=tanggal_masehi,
@@ -65,6 +84,7 @@ def index():
         jadwal_hari_ini=jadwal_hari_ini,
         lokasi=default_lokasi,
         next_prayer=next_prayer,
+        astro_data=astro_data,
     )
 
 @app.route("/konversi-tanggal", methods=["GET", "POST"])

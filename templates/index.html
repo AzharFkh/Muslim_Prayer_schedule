@@ -69,6 +69,36 @@
     </div>
   </section>
 
+  <section class="astro-dashboard">
+    <div class="section-header">
+      <div>
+        <h2>Data Astronomi Matahari Hari Ini</h2>
+        <p class="location-meta">
+          Parameter perhitungan: Subuh -20&deg; &bull; Isya -18&deg; &bull; Ashar Syafi'i (KA = 1)
+        </p>
+      </div>
+    </div>
+
+    <div class="astro-cards-grid">
+      <div class="info-card">
+        <span class="card-label">Deklinasi Matahari (&delta;)</span>
+        <strong class="card-value">{{ "%.2f"|format(astro_data.deklinasi) }}&deg;</strong>
+      </div>
+      <div class="info-card">
+        <span class="card-label">Equation of Time (ET)</span>
+        <strong class="card-value">{{ "%+.2f"|format(astro_data.equation_of_time) }} menit</strong>
+      </div>
+      <div class="info-card">
+        <span class="card-label">Waktu Transit / Istiwa</span>
+        <strong class="card-value">{{ astro_data.waktu_transit }} WIB</strong>
+      </div>
+      <div class="info-card">
+        <span class="card-label">Koreksi Ufuk Maghrib</span>
+        <strong class="card-value">{{ "%.2f"|format(astro_data.h_maghrib) }}&deg;</strong>
+      </div>
+    </div>
+  </section>
+
   <section class="about-card">
     <p>
       Website ini dikembangkan sebagai pembelajaran pada mata kuliah Fisika Komputasi Astronomi

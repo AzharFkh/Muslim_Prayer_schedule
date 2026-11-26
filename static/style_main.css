@@ -15,6 +15,7 @@ body {
 
 .dashboard-hero,
 .prayer-dashboard,
+.astro-dashboard,
 .about-card {
   background: #ffffff;
   border-radius: 16px;
@@ -80,6 +81,12 @@ body {
 .date-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.astro-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 1rem;
 }
 
