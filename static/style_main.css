@@ -139,6 +139,37 @@ body {
   color: #5a6a7b;
 }
 
+.location-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.btn-refresh-loc {
+  background: #eef3f8;
+  color: #2b8cb5;
+  border: 1px solid #d5e4ee;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  transition: background-color 0.2s ease;
+}
+
+.btn-refresh-loc:hover {
+  background: #e1eef7;
+}
+
+.location-status {
+  display: block;
+  font-size: 0.78rem;
+  color: #6b7c8d;
+  margin-top: 0.25rem;
+}
+
 .next-prayer-pill {
   background: #e6f5fb;
   color: #1f6f91;

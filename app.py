@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from utilities.JDtoJadwalSolat import (
     jadwal_solat,
     sudut_deklinasi,
@@ -12,19 +12,10 @@ import datetime
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
-def index():
-    # Lokasi default: Kota Malang (WIB / GMT+7)
-    default_lokasi = {
-        "nama": "Kota Malang",
-        "latitude": -7.9666,
-        "longitude": 112.6326,
-        "timezone": 7,
-        "altitude": 450,
-    }
-
-    wib = datetime.timezone(datetime.timedelta(hours=default_lokasi["timezone"]))
-    now = datetime.datetime.now(wib)
+def _compute_dashboard_data(latitude, longitude, timezone, altitude=0.0):
+    """Hitung data kalender, jadwal sholat hari ini, dan parameter astronomi matahari."""
+    tz_info = datetime.timezone(datetime.timedelta(hours=timezone))
+    now = datetime.datetime.now(tz_info)
     today = now.date()
 
     hari_indonesia = [
@@ -42,10 +33,10 @@ def index():
 
     jadwal_hari_ini = jadwal_solat(
         jd_today,
-        default_lokasi["latitude"],
-        default_lokasi["longitude"],
-        default_lokasi["timezone"],
-        default_lokasi["altitude"],
+        latitude,
+        longitude,
+        timezone,
+        altitude,
         KA=1,
         h_subuh=-20,
         h_isya=-18,
@@ -67,26 +58,59 @@ def index():
     astro_data = {
         "deklinasi": sudut_deklinasi(jd_today),
         "equation_of_time": equation_of_time(jd_today),
-        "waktu_transit": to_hhmm(
-            waktu_transit(
-                jd_today,
-                default_lokasi["longitude"],
-                default_lokasi["timezone"],
-            )
-        ),
-        "h_maghrib": -0.8333 - 0.0347 * (default_lokasi["altitude"] ** 0.5),
+        "waktu_transit": to_hhmm(waktu_transit(jd_today, longitude, timezone)),
+        "h_maghrib": -0.8333 - 0.0347 * (max(0.0, altitude) ** 0.5),
     }
+
+    return {
+        "tanggal_masehi": tanggal_masehi,
+        "tanggal_hijriah": tanggal_hijriah,
+        "jd_today": jd_today,
+        "jadwal_hari_ini": jadwal_hari_ini,
+        "next_prayer": next_prayer,
+        "astro_data": astro_data,
+    }
+
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    # Lokasi default: Kota Malang (WIB / GMT+7)
+    default_lokasi = {
+        "nama": "Kota Malang",
+        "latitude": -7.9666,
+        "longitude": 112.6326,
+        "timezone": 7,
+        "altitude": 450,
+    }
+
+    data = _compute_dashboard_data(
+        default_lokasi["latitude"],
+        default_lokasi["longitude"],
+        default_lokasi["timezone"],
+        default_lokasi["altitude"],
+    )
 
     return render_template(
         "index.html",
-        tanggal_masehi=tanggal_masehi,
-        tanggal_hijriah=tanggal_hijriah,
-        jd_today=jd_today,
-        jadwal_hari_ini=jadwal_hari_ini,
         lokasi=default_lokasi,
-        next_prayer=next_prayer,
-        astro_data=astro_data,
+        **data,
     )
+
+
+@app.route("/api/jadwal-hari-ini", methods=["GET"])
+def api_jadwal_hari_ini():
+    lat = safe_float(request.args.get("lat"))
+    lon = safe_float(request.args.get("lon"))
+    tz = safe_float(request.args.get("tz"))
+    alt = safe_float(request.args.get("alt"))
+
+    if None in (lat, lon, tz):
+        return jsonify({"error": "Parameter lokasi tidak valid."}), 400
+    if alt is None:
+        alt = 0.0
+
+    data = _compute_dashboard_data(lat, lon, tz, alt)
+    return jsonify(data)
 
 @app.route("/konversi-tanggal", methods=["GET", "POST"])
 def konversi_tanggal():

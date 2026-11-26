@@ -3,7 +3,7 @@
 {% block title %}Home - Dashboard Pemantauan{% endblock %}
 
 {% block head_scripts %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='style_main.css', v='6') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style_main.css', v='7') }}">
 {% endblock %}
 
 {% block content %}
@@ -24,15 +24,15 @@
     <div class="date-cards-grid">
       <div class="info-card">
         <span class="card-label">Tanggal Masehi</span>
-        <strong class="card-value">{{ tanggal_masehi }}</strong>
+        <strong class="card-value" id="date-masehi">{{ tanggal_masehi }}</strong>
       </div>
       <div class="info-card">
         <span class="card-label">Tanggal Hijriah</span>
-        <strong class="card-value">{{ tanggal_hijriah }}</strong>
+        <strong class="card-value" id="date-hijriah">{{ tanggal_hijriah }}</strong>
       </div>
       <div class="info-card accent-card">
         <span class="card-label">Julian Day (00:00 UT)</span>
-        <strong class="card-value">{{ "%.1f"|format(jd_today) }}</strong>
+        <strong class="card-value" id="date-jd">{{ "%.1f"|format(jd_today) }}</strong>
       </div>
     </div>
   </section>
@@ -41,20 +41,24 @@
     <div class="section-header">
       <div>
         <h2>Jadwal Sholat Hari Ini</h2>
-        <p class="location-meta">
-          {{ lokasi.nama }} ({{ lokasi.latitude }}°, {{ lokasi.longitude }}° &bull; GMT+{{ lokasi.timezone }} &bull; {{ lokasi.altitude }} mdpl)
-        </p>
+        <div class="location-row">
+          <p class="location-meta" id="location-meta">
+            {{ lokasi.nama }} ({{ lokasi.latitude }}&deg;, {{ lokasi.longitude }}&deg; &bull; GMT+{{ lokasi.timezone }} &bull; {{ lokasi.altitude }} mdpl)
+          </p>
+          <button type="button" id="refresh-location-btn" class="btn-refresh-loc">Perbarui Lokasi</button>
+        </div>
+        <span id="location-status" class="location-status"></span>
       </div>
       <div class="next-prayer-pill" id="next-prayer-pill"
            data-target-time="{{ next_prayer.waktu }}"
            data-is-tomorrow="{{ 'true' if next_prayer.besok else 'false' }}">
         <span class="pill-label">Berikutnya:</span>
-        <strong>{{ next_prayer.nama }} ({{ next_prayer.waktu }})</strong>
+        <strong id="next-prayer-text">{{ next_prayer.nama }} ({{ next_prayer.waktu }})</strong>
         <span id="prayer-countdown" class="pill-countdown"></span>
       </div>
     </div>
 
-    <div class="prayer-cards-grid">
+    <div class="prayer-cards-grid" id="prayer-cards-grid">
       {% for nama, waktu in jadwal_hari_ini.items() %}
       <div class="prayer-card {% if not next_prayer.besok and next_prayer.nama == nama %}is-next{% elif next_prayer.besok and nama == 'Subuh' %}is-next{% endif %}">
         <span class="prayer-name">{{ nama }}</span>
@@ -82,19 +86,19 @@
     <div class="astro-cards-grid">
       <div class="info-card">
         <span class="card-label">Deklinasi Matahari (&delta;)</span>
-        <strong class="card-value">{{ "%.2f"|format(astro_data.deklinasi) }}&deg;</strong>
+        <strong class="card-value" id="astro-deklinasi">{{ "%.2f"|format(astro_data.deklinasi) }}&deg;</strong>
       </div>
       <div class="info-card">
         <span class="card-label">Equation of Time (ET)</span>
-        <strong class="card-value">{{ "%+.2f"|format(astro_data.equation_of_time) }} menit</strong>
+        <strong class="card-value" id="astro-et">{{ "%+.2f"|format(astro_data.equation_of_time) }} menit</strong>
       </div>
       <div class="info-card">
         <span class="card-label">Waktu Transit / Istiwa</span>
-        <strong class="card-value">{{ astro_data.waktu_transit }} WIB</strong>
+        <strong class="card-value" id="astro-transit">{{ astro_data.waktu_transit }} WIB</strong>
       </div>
       <div class="info-card">
         <span class="card-label">Koreksi Ufuk Maghrib</span>
-        <strong class="card-value">{{ "%.2f"|format(astro_data.h_maghrib) }}&deg;</strong>
+        <strong class="card-value" id="astro-h-maghrib">{{ "%.2f"|format(astro_data.h_maghrib) }}&deg;</strong>
       </div>
     </div>
   </section>
@@ -144,5 +148,138 @@
 
   updateDashboardClock();
   setInterval(updateDashboardClock, 1000);
+
+  const STORAGE_KEY = "user_prayer_location";
+
+  function formatTzLabel(tz) {
+    const sign = tz >= 0 ? "+" : "";
+    return `GMT${sign}${Number.isInteger(tz) ? tz : tz.toFixed(1)}`;
+  }
+
+  function applyDashboardData(data, loc) {
+    document.getElementById("date-masehi").textContent = data.tanggal_masehi;
+    document.getElementById("date-hijriah").textContent = data.tanggal_hijriah;
+    document.getElementById("date-jd").textContent = Number(data.jd_today).toFixed(1);
+
+    const cityLabel = loc.cityName || "Lokasi Anda";
+    document.getElementById("location-meta").textContent =
+      `${cityLabel} (${loc.lat.toFixed(4)}°, ${loc.lon.toFixed(4)}° • ${formatTzLabel(loc.tz)} • ${Math.round(loc.alt)} mdpl)`;
+
+    const pillEl = document.getElementById("next-prayer-pill");
+    pillEl.dataset.targetTime = data.next_prayer.waktu;
+    pillEl.dataset.isTomorrow = data.next_prayer.besok ? "true" : "false";
+    document.getElementById("next-prayer-text").textContent =
+      `${data.next_prayer.nama} (${data.next_prayer.waktu})`;
+
+    const prayerOrder = ["Subuh", "Terbit", "Zuhur", "Ashar", "Maghrib", "Isya"];
+    const gridEl = document.getElementById("prayer-cards-grid");
+    gridEl.innerHTML = "";
+    prayerOrder.forEach((nama) => {
+      const waktu = data.jadwal_hari_ini[nama];
+      if (!waktu) return;
+      const isNext = (!data.next_prayer.besok && data.next_prayer.nama === nama) ||
+                     (data.next_prayer.besok && nama === "Subuh");
+      const card = document.createElement("div");
+      card.className = `prayer-card${isNext ? " is-next" : ""}`;
+      card.innerHTML = `<span class="prayer-name">${nama}</span><strong class="prayer-time">${waktu}</strong>`;
+      gridEl.appendChild(card);
+    });
+
+    document.getElementById("astro-deklinasi").textContent = `${data.astro_data.deklinasi.toFixed(2)}°`;
+    const etVal = data.astro_data.equation_of_time;
+    document.getElementById("astro-et").textContent = `${etVal >= 0 ? "+" : ""}${etVal.toFixed(2)} menit`;
+    document.getElementById("astro-transit").textContent = `${data.astro_data.waktu_transit} (${formatTzLabel(loc.tz)})`;
+    document.getElementById("astro-h-maghrib").textContent = `${data.astro_data.h_maghrib.toFixed(2)}°`;
+
+    updateDashboardClock();
+  }
+
+  async function reverseGeocodeCity(lat, lon) {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`;
+      const res = await fetch(url, { headers: { "Accept-Language": "id" } });
+      if (!res.ok) return null;
+      const geo = await res.json();
+      const addr = geo.address || {};
+      return addr.city || addr.town || addr.municipality || addr.county || addr.state || null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function updateScheduleForLocation(loc) {
+    const statusEl = document.getElementById("location-status");
+    try {
+      const params = new URLSearchParams({
+        lat: loc.lat,
+        lon: loc.lon,
+        tz: loc.tz,
+        alt: loc.alt
+      });
+      const res = await fetch(`/api/jadwal-hari-ini?${params.toString()}`);
+      if (!res.ok) throw new Error("Gagal mengambil jadwal");
+      const data = await res.json();
+      applyDashboardData(data, loc);
+      if (statusEl) statusEl.textContent = "";
+    } catch (err) {
+      if (statusEl) statusEl.textContent = "Gagal memperbarui jadwal lokasi.";
+    }
+  }
+
+  function requestBrowserLocation(manual = false) {
+    const statusEl = document.getElementById("location-status");
+    if (!navigator.geolocation) {
+      if (manual && statusEl) statusEl.textContent = "Browser tidak mendukung geolokasi.";
+      return;
+    }
+
+    if (manual && statusEl) statusEl.textContent = "Mendeteksi lokasi...";
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        const alt = pos.coords.altitude ?? 0;
+        const tz = -(new Date().getTimezoneOffset()) / 60;
+
+        const savedRaw = localStorage.getItem(STORAGE_KEY);
+        const saved = savedRaw ? JSON.parse(savedRaw) : null;
+        let cityName = saved && Math.abs(saved.lat - lat) < 0.01 && Math.abs(saved.lon - lon) < 0.01
+          ? saved.cityName
+          : null;
+
+        if (!cityName) {
+          cityName = await reverseGeocodeCity(lat, lon);
+        }
+
+        const loc = { lat, lon, tz, alt, cityName: cityName || "Lokasi Anda" };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(loc));
+        await updateScheduleForLocation(loc);
+      },
+      (err) => {
+        if (manual && statusEl) {
+          statusEl.textContent = err.code === err.PERMISSION_DENIED
+            ? "Izin lokasi ditolak, menampilkan lokasi default."
+            : "Tidak dapat mendeteksi lokasi.";
+        }
+      },
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 }
+    );
+  }
+
+  document.getElementById("refresh-location-btn")?.addEventListener("click", () => {
+    requestBrowserLocation(true);
+  });
+
+  // Muat lokasi tersimpan lebih dulu agar instan, lalu perbarui otomatis dari browser
+  const cachedLoc = localStorage.getItem(STORAGE_KEY);
+  if (cachedLoc) {
+    try {
+      updateScheduleForLocation(JSON.parse(cachedLoc));
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }
+  requestBrowserLocation(false);
 </script>
 {% endblock scripts %}
