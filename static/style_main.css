@@ -59,9 +59,8 @@ body {
   background: #f7f9fc;
   border: 1px solid #e1e8f0;
   border-radius: 12px;
-  padding: 0.75rem 1.2rem;
-  text-align: right;
-  min-width: 130px;
+  padding: 0.75rem 1.15rem;
+  text-align: center;
 }
 
 .clock-label {
@@ -247,4 +246,24 @@ body {
 .thanks-text {
   margin-top: 0.75rem !important;
   color: #3a4759;
+}
+
+.lecturer-name {
+  display: block;
+  font-size: 1.05rem;
+  margin: 0.35rem 0;
+  color: #22303c;
+}
+
+@media (max-width: 600px) {
+  .hero-header {
+    margin-bottom: 1rem;
+  }
+
+  .live-clock-box {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    padding: 1rem 1.2rem;
+  }
 }
