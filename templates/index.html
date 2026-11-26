@@ -7,24 +7,112 @@
 {% endblock %}
 
 {% block content %}
+<div class="dashboard-wrapper">
+  <section class="dashboard-hero">
+    <div class="hero-header">
+      <div>
+        <span class="hero-badge">Fisika Komputasi Astronomi</span>
+        <h1>Dashboard Hari Ini</h1>
+        <p class="hero-subtitle">Ringkasan kalender astronomis &amp; jadwal waktu sholat harian</p>
+      </div>
+      <div class="live-clock-box">
+        <span class="clock-label">Waktu Lokal</span>
+        <span id="live-clock" class="clock-value">--:--:--</span>
+      </div>
+    </div>
 
-<div class="main-page-container">
-    <h4>Website ini dikembangkan sebagai pembelajaran pada mata kuliah fisika komputasi astronomi sebagai 
-        alat untuk melakukan konversi sistem penanggalan dan jadwal waktu solat berbasis perhitungan astronomis</h2>
+    <div class="date-cards-grid">
+      <div class="info-card">
+        <span class="card-label">Tanggal Masehi</span>
+        <strong class="card-value">{{ tanggal_masehi }}</strong>
+      </div>
+      <div class="info-card">
+        <span class="card-label">Tanggal Hijriah</span>
+        <strong class="card-value">{{ tanggal_hijriah }}</strong>
+      </div>
+      <div class="info-card accent-card">
+        <span class="card-label">Julian Day (00:00 UT)</span>
+        <strong class="card-value">{{ "%.1f"|format(jd_today) }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="prayer-dashboard">
+    <div class="section-header">
+      <div>
+        <h2>Jadwal Sholat Hari Ini</h2>
+        <p class="location-meta">
+          {{ lokasi.nama }} ({{ lokasi.latitude }}°, {{ lokasi.longitude }}° &bull; GMT+{{ lokasi.timezone }} &bull; {{ lokasi.altitude }} mdpl)
+        </p>
+      </div>
+      <div class="next-prayer-pill" id="next-prayer-pill"
+           data-target-time="{{ next_prayer.waktu }}"
+           data-is-tomorrow="{{ 'true' if next_prayer.besok else 'false' }}">
+        <span class="pill-label">Berikutnya:</span>
+        <strong>{{ next_prayer.nama }} ({{ next_prayer.waktu }})</strong>
+        <span id="prayer-countdown" class="pill-countdown"></span>
+      </div>
+    </div>
+
+    <div class="prayer-cards-grid">
+      {% for nama, waktu in jadwal_hari_ini.items() %}
+      <div class="prayer-card {% if not next_prayer.besok and next_prayer.nama == nama %}is-next{% elif next_prayer.besok and nama == 'Subuh' %}is-next{% endif %}">
+        <span class="prayer-name">{{ nama }}</span>
+        <strong class="prayer-time">{{ waktu }}</strong>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="quick-actions">
+      <a href="{{ url_for('jadwal_solat_page') }}" class="btn-action primary">Hitung Lokasi Lain &rarr;</a>
+      <a href="{{ url_for('konversi_tanggal') }}" class="btn-action secondary">Konversi Tanggal Lain &rarr;</a>
+    </div>
+  </section>
+
+  <section class="about-card">
+    <p>
+      Website ini dikembangkan sebagai pembelajaran pada mata kuliah Fisika Komputasi Astronomi
+      sebagai alat untuk melakukan konversi sistem penanggalan dan jadwal waktu sholat berbasis
+      perhitungan astronomis.
+    </p>
+    <p class="thanks-text">
+      Terima kasih kepada
+      <strong>Prof. Dr. rer. nat. Abdurrouf, S.Si., M.Si.</strong>
+      selaku dosen pengampu mata kuliah atas arahan akademik, perspektif ilmiah, serta ruang
+      pengembangan kompetensi sehingga proyek ini dapat diselesaikan.
+    </p>
+  </section>
 </div>
-
-<div class="main-page-container">
-    <h4>
-        Saya menyampaikan ucapan terima kasih kepada:
-        <br>
-        <strong style="font-size: 1.15rem; display:inline-block; margin: 6px 0;">
-          Prof. Dr. rer. nat. Abdurrouf, S.Si., M.Si.
-        </strong>
-        <br>
-        selaku dosen pengampu mata kuliah yang telah memberikan arahan akademik,
-        perspektif ilmiah, serta ruang pengembangan kompetensi sehingga proyek ini
-        dapat diselesaikan.
-    </h4>
-</div>
-
 {% endblock content %}
+
+{% block scripts %}
+<script>
+  function updateDashboardClock() {
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    const clockEl = document.getElementById("live-clock");
+    if (clockEl) {
+      clockEl.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    }
+
+    const pillEl = document.getElementById("next-prayer-pill");
+    const countdownEl = document.getElementById("prayer-countdown");
+    if (pillEl && countdownEl) {
+      const [h, m] = pillEl.dataset.targetTime.split(":").map(Number);
+      const target = new Date(now);
+      target.setHours(h, m, 0, 0);
+      if (pillEl.dataset.isTomorrow === "true" || target <= now) {
+        target.setDate(target.getDate() + 1);
+      }
+      const diffSec = Math.max(0, Math.floor((target - now) / 1000));
+      const dh = Math.floor(diffSec / 3600);
+      const dm = Math.floor((diffSec % 3600) / 60);
+      const ds = diffSec % 60;
+      countdownEl.textContent = `- ${pad(dh)}:${pad(dm)}:${pad(ds)}`;
+    }
+  }
+
+  updateDashboardClock();
+  setInterval(updateDashboardClock, 1000);
+</script>
+{% endblock scripts %}

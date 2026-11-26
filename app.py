@@ -8,7 +8,64 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html")
+    now = datetime.datetime.now()
+    today = now.date()
+
+    hari_indonesia = [
+        "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"
+    ]
+    nama_hari = hari_indonesia[today.weekday()]
+
+    jd_today = GregorianConverter(
+        year=today.year, month=today.month, day=today.day
+    ).to_JD()
+    h_day, h_month, h_year = HijriahConverter(JD=jd_today).from_JD()
+
+    tanggal_masehi = f"{nama_hari}, {today.day} {bulan_greg_reverse.get(today.month, today.month)} {today.year}"
+    tanggal_hijriah = f"{h_day} {bulan_hijriah_reverse.get(h_month, h_month)} {h_year} H"
+
+    # Lokasi default: Kota Malang (WIB / GMT+7)
+    default_lokasi = {
+        "nama": "Kota Malang",
+        "latitude": -7.9666,
+        "longitude": 112.6326,
+        "timezone": 7,
+        "altitude": 450,
+    }
+
+    jadwal_hari_ini = jadwal_solat(
+        jd_today,
+        default_lokasi["latitude"],
+        default_lokasi["longitude"],
+        default_lokasi["timezone"],
+        default_lokasi["altitude"],
+        KA=1,
+        h_subuh=-20,
+        h_isya=-18,
+    )
+
+    now_hhmm = now.strftime("%H:%M")
+    next_prayer = None
+    for nama, waktu in jadwal_hari_ini.items():
+        if waktu > now_hhmm:
+            next_prayer = {"nama": nama, "waktu": waktu, "besok": False}
+            break
+    if next_prayer is None:
+        next_prayer = {
+            "nama": "Subuh",
+            "waktu": jadwal_hari_ini["Subuh"],
+            "besok": True,
+        }
+
+    return render_template(
+        "index.html",
+        tanggal_masehi=tanggal_masehi,
+        tanggal_hijriah=tanggal_hijriah,
+        jd_today=jd_today,
+        jadwal_hari_ini=jadwal_hari_ini,
+        lokasi=default_lokasi,
+        next_prayer=next_prayer,
+    )
 
 @app.route("/konversi-tanggal", methods=["GET", "POST"])
 def konversi_tanggal():
